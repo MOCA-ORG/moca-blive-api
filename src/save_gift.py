@@ -18,6 +18,8 @@
 # -- Imports --------------------------------------------------------------------------
 
 from .core import moca_config, loop
+from warnings import filterwarnings
+from pymysql import Warning
 from .mysql import get_aio_con_with_default_config
 
 # -------------------------------------------------------------------------- Imports --
@@ -25,6 +27,8 @@ from .mysql import get_aio_con_with_default_config
 # -- Init --------------------------------------------------------------------------
 
 moca_config.get('save_gifts', bool, False)
+
+filterwarnings("error", category=Warning)
 
 # -------------------------------------------------------------------------- Init --
 

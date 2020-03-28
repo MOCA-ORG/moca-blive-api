@@ -19,12 +19,16 @@
 
 from .core import moca_config, loop
 from .mysql import get_aio_con_with_default_config
+from warnings import filterwarnings
+from pymysql import Warning
 
 # -------------------------------------------------------------------------- Imports --
 
 # -- Init --------------------------------------------------------------------------
 
 moca_config.get('save_comments', bool, False)
+
+filterwarnings("error", category=Warning)
 
 # -------------------------------------------------------------------------- Init --
 
