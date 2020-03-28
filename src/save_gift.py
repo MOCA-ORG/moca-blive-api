@@ -17,8 +17,7 @@
 
 # -- Imports --------------------------------------------------------------------------
 
-from .core import moca_config
-from asyncio import run
+from .core import moca_config, loop
 from .mysql import get_aio_con_with_default_config
 
 # -------------------------------------------------------------------------- Imports --
@@ -54,14 +53,14 @@ values(%s, %s, %s, %s, %s, %s, %s);
 # -- Setup --------------------------------------------------------------------------
 
 if moca_config.get('save_gifts', bool, False):
-    connection = run(get_aio_con_with_default_config())
+    connection = loop.run_until_complete(get_aio_con_with_default_config())
 
     async def __execute(query: str):
         async with connection.cursor() as cursor:
             await cursor.execute(query)
             await connection.commit()
 
-    run(__execute(gifts_table))
+    loop.run_until_complete(__execute(gifts_table))
 
 else:
     connection = None
