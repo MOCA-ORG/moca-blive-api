@@ -73,7 +73,7 @@ else:
 async def save_gift(room_id: int, user_name: str, gift_id: str, gift_name: str,
                     gift_num: str, coin_type: str, total_coin: str):
     if moca_config.get('save_gifts', bool, False) and connection is not None:
-        async with connection as cursor:
+        async with connection.cursor() as cursor:
             await cursor.execute(insert_gift, (room_id, user_name, gift_id, gift_name, gift_num, coin_type, total_coin))
             await connection.commit()
 

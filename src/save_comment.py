@@ -68,7 +68,7 @@ else:
 
 async def save_comment(room_id: int, user_name: str, comment: str):
     if moca_config.get('save_comments', bool, False) and connection is not None:
-        async with connection as cursor:
+        async with connection.cursor() as cursor:
             await cursor.execute(insert_comment, (str(room_id), str(user_name), str(comment)))
             await connection.commit()
 
