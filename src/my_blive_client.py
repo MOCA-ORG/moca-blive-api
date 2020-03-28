@@ -17,7 +17,7 @@
 
 # -- Imports --------------------------------------------------------------------------
 
-from .send_mail import send_mail
+from .send_mail import send_unknown_gift_mail
 from . import blivedm
 from aiohttp import ClientSession
 from ujson import dumps
@@ -70,12 +70,12 @@ class MyBLiveClient(blivedm.BLiveClient):
         if str(gift.gift_id) not in gift_id_list:
             gift_id_list.append(str(gift.gift_id))
             moca_config.set('gift_id_list', gift_id_list)
-            await send_mail(f'检测到未登记的礼物ID。 Name: {gift.gift_name}, ID: {gift.gift_id}')
+            await send_unknown_gift_mail(f'检测到未登记的礼物ID。 Name: {gift.gift_name}, ID: {gift.gift_id}')
         async with self._app.pool.acquire() as con:
             async with con.cursor() as cur:
                 await cur.execute(insert_gift, (self._room_id, str(gift.uname), str(gift.gift_id),
-                                                   str(gift.gift_name), str(gift.num), str(gift.coin_type),
-                                                   str(gift.total_coin)))
+                                                str(gift.gift_name), str(gift.num), str(gift.coin_type),
+                                                str(gift.total_coin)))
                 await con.commit()
         await self._ws.send(dumps({
             'cmd': 'gift',
