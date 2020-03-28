@@ -1,0 +1,8 @@
+sanic
+aiofiles
+pymysql
+aiomysql
+aiosmtplib
+ujson
+aiohttp
+moca_config
