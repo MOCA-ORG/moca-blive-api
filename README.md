@@ -30,6 +30,11 @@ nohup python3 blive_comment_api_server.py > /dev/null &
    "api_key": "自定义的API秘钥。需要和config.json文件里面一致"
 }
 ```
+## 什么是房间号
+- 如果直播间的URL是`https://live.bilibili.com/123456`
+- 那么房间号就是`123456`
+- 房间号是每个账号固定的，不会改变。
+
 - 之后服务器会实时向客服端发送直播信息。
 
 ## 设定
