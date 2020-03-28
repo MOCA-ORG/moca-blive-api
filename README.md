@@ -28,7 +28,7 @@ nohup python3 blive_comment_api_server.py > /dev/null &
    "api_key": "自定义的API秘钥。需要和config.json文件里面一致"
 }
 ```
-- 服务会实时向客服端发送直播信息。
+- 之后服务器会实时向客服端发送直播信息。
 
 ## 设定
 #### 全部设定都在 config.json 文件内
