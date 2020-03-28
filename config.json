@@ -52,12 +52,13 @@
     "mysql_host": "127.0.0.1",
     "mysql_maxsize": 10,
     "mysql_minsize": 1,
-    "mysql_pass": "",
+    "mysql_pass": "mochimochi",
     "mysql_port": 3306,
     "mysql_user": "root",
     "save_comments": false,
     "save_gifts": false,
     "send_mail_if_found_unknown_gift_name": false,
+    "send_mail_if_start_listen": false,
     "smtp_from_address": "",
     "smtp_mail_title": "BliveCommentAPI",
     "smtp_server_host": "",
@@ -65,6 +66,5 @@
     "smtp_server_port": 25,
     "smtp_server_user": "",
     "smtp_to_address": [],
-    "smtp_use_ssl": true,
-    "send_mail_if_start_listen": false
+    "smtp_use_ssl": true
 }

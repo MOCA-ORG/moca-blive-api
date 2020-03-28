@@ -55,10 +55,11 @@ class MyBLiveClient(blivedm.BLiveClient):
         self._app = app
 
     async def _on_receive_danmaku(self, danmaku: blivedm.DanmakuMessage):
-        async with self._app.pool.acquire() as con:
-            async with con.cursor() as cur:
-                await cur.execute(insert_comment, (self._room_id, str(danmaku.uname), str(danmaku.msg)))
-                await con.commit()
+        if moca_config.get('save_comments', bool, False):
+            async with self._app.pool.acquire() as con:
+                async with con.cursor() as cur:
+                    await cur.execute(insert_comment, (self._room_id, str(danmaku.uname), str(danmaku.msg)))
+                    await con.commit()
         await self._ws.send(dumps({
             'cmd': 'danmaku',
             'uname': danmaku.uname,
@@ -71,12 +72,13 @@ class MyBLiveClient(blivedm.BLiveClient):
             gift_id_list.append(str(gift.gift_id))
             moca_config.set('gift_id_list', gift_id_list)
             await send_unknown_gift_mail(f'检测到未登记的礼物ID。 Name: {gift.gift_name}, ID: {gift.gift_id}')
-        async with self._app.pool.acquire() as con:
-            async with con.cursor() as cur:
-                await cur.execute(insert_gift, (self._room_id, str(gift.uname), str(gift.gift_id),
-                                                str(gift.gift_name), str(gift.num), str(gift.coin_type),
-                                                str(gift.total_coin)))
-                await con.commit()
+        if moca_config.get('save_gifts', bool, False):
+            async with self._app.pool.acquire() as con:
+                async with con.cursor() as cur:
+                    await cur.execute(insert_gift, (self._room_id, str(gift.uname), str(gift.gift_id),
+                                                    str(gift.gift_name), str(gift.num), str(gift.coin_type),
+                                                    str(gift.total_coin)))
+                    await con.commit()
         await self._ws.send(dumps({
             'cmd': 'gift',
             'uname': gift.uname,

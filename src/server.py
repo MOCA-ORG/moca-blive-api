@@ -35,6 +35,7 @@ from ujson import loads
 from .mysql import get_aio_con_pool_with_default_config
 from pymysql import Warning
 from .send_mail import send_start_listen_mail
+from .blivedm import InitError
 
 # -------------------------------------------------------------------------- Imports --
 
@@ -136,6 +137,8 @@ async def live(request, ws):
             save_log(f"开始监听直播: {data['room_id']}")
             await send_start_listen_mail(f"开始监听直播: {data['room_id']}")
             await client.start()
+        except InitError:
+            await ws.send('ROOM ID ERROR')
         finally:
             online_list.remove(data['room_id'])
             save_log(f"停止监听直播: {data['room_id']}")
