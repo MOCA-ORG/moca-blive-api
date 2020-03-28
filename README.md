@@ -92,7 +92,8 @@ nohup python3 blive_comment_api_server.py > /dev/null &
     "smtp_server_port": 25, // 邮件服务器端口
     "smtp_server_user": "", // 邮件服务器用户名
     "smtp_to_address": [], // 邮件接收邮箱清单
-    "smtp_use_ssl": true // 发送邮件是否使用SSL
+    "smtp_use_ssl": true, // 发送邮件是否使用SSL
+    "send_mail_if_start_listen": false // 开始监控直播间的时候是否发送开始通知
 }
 ```
 

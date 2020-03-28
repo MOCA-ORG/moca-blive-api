@@ -65,5 +65,6 @@
     "smtp_server_port": 25,
     "smtp_server_user": "",
     "smtp_to_address": [],
-    "smtp_use_ssl": true
+    "smtp_use_ssl": true,
+    "send_mail_if_start_listen": false
 }
