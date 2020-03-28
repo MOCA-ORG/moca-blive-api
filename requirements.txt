@@ -6,3 +6,4 @@ aiosmtplib
 ujson
 aiohttp
 moca_config
+uvloop

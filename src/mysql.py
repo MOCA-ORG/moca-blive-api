@@ -19,7 +19,7 @@
 
 from pymysql.err import MySQLError
 from aiomysql import connect
-from .core import moca_config
+from .core import moca_config, loop
 from .save_log import save_log
 
 # -------------------------------------------------------------------------- Imports --
@@ -48,7 +48,8 @@ async def get_aio_con(host: str = '127.0.0.1',
                             port=port,
                             user=user,
                             password=password,
-                            db=dbname)
+                            db=dbname,
+                            loop=loop)
         return con
     except MySQLError as error:
         await save_log('异步的mysql数据库连接获取失败。'
