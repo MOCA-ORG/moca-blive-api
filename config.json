@@ -52,7 +52,7 @@
     "mysql_host": "127.0.0.1",
     "mysql_maxsize": 10,
     "mysql_minsize": 1,
-    "mysql_pass": "mochimochi",
+    "mysql_pass": "",
     "mysql_port": 3306,
     "mysql_user": "root",
     "save_comments": false,
