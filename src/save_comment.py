@@ -53,7 +53,7 @@ if moca_config.get('save_comments', bool, False):
     connection = run(get_aio_con_with_default_config())
 
     async def __execute(query: str):
-        async with connection as cursor:
+        async with connection.cursor() as cursor:
             await cursor.execute(query)
             await connection.commit()
 
