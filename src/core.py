@@ -19,21 +19,11 @@
 
 from moca_config import MocaConfig
 from pathlib import Path
-from uvloop import install
-from asyncio import get_event_loop
 
 # -------------------------------------------------------------------------- Imports --
-
-# -- Setup --------------------------------------------------------------------------
-
-install()
-
-# -------------------------------------------------------------------------- Setup --
 
 # -- Variables --------------------------------------------------------------------------
 
 moca_config = MocaConfig('config', Path(__file__).parent.parent, 'config.json', reload_interval=-1)
-
-loop = get_event_loop()
 
 # -------------------------------------------------------------------------- Variables --

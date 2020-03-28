@@ -24,18 +24,22 @@ from sanic.response import text, json
 from pathlib import Path
 from sanic.websocket import WebSocketProtocol
 from .core import moca_config
+from warnings import filterwarnings
 from .save_log import save_log
-from asyncio import run
 from moca_core import get_process_id
 import ssl
 from sanic.log import logger, LOGGING_CONFIG_DEFAULTS
 from logging import INFO
 from .my_blive_client import MyBLiveClient
 from ujson import loads
+from .mysql import get_aio_con_pool_with_default_config
+from pymysql import Warning
 
 # -------------------------------------------------------------------------- Imports --
 
 # -- Init --------------------------------------------------------------------------
+
+filterwarnings("error", category=Warning)
 
 moca_config.get('api_server_host', str, '0.0.0.0')
 moca_config.get('api_key', str, get_random_string(64))
@@ -46,6 +50,9 @@ moca_config.get('api_server_keyfile', str, '')
 moca_config.get('api_server_access_log', bool, False)
 moca_config.get('api_server_debug', bool, False)
 moca_config.get('api_server_use_ipv6', bool, False)
+
+moca_config.get('save_gifts', bool, False)
+moca_config.get('save_comments', bool, False)
 
 # -------------------------------------------------------------------------- Init --
 
@@ -76,9 +83,31 @@ LOGGING_CONFIG_DEFAULTS['loggers']['sanic.access']['handlers'][0] = 'access_file
 
 # -- Variables --------------------------------------------------------------------------
 
-app: Sanic = Sanic()
+app: Sanic = Sanic('BliveCommentAPI')
 
 online_list: list = []
+
+gifts_table = """
+create table if not exists user_gifts (
+    id bigint auto_increment primary key,
+    room_id varchar(64) not null,
+    user_name varchar(64) not null,
+    gift_id varchar(16) not null,
+    gift_name varchar(16) not null,
+    gift_num varchar(16) not null, 
+    coin_type varchar(16) not null,
+    total_coin varchar(16) not null
+); 
+"""
+
+comments_table = """
+create table if not exists user_comments (
+    id bigint auto_increment primary key,
+    room_id varchar(64) not null,
+    user_name varchar(64) not null,
+    comment varchar(128) not null 
+); 
+"""
 
 # -------------------------------------------------------------------------- Variables --
 
@@ -101,18 +130,46 @@ async def live(request, ws):
     if data['cmd'] == 'start' and data['api_key'] == moca_config.get('api_key', str, ''):
         if data['room_id'] not in online_list:
             online_list.append(data['room_id'])
-        client = MyBLiveClient(room_id=data['room_id'], loop=app.loop, ws=ws)
+        client = MyBLiveClient(room_id=data['room_id'], loop=app.loop, ws=ws, app=app)
         try:
-            await save_log(f"开始监听直播: {data['room_id']}")
+            save_log(f"开始监听直播: {data['room_id']}")
             await client.start()
         finally:
             online_list.remove(data['room_id'])
-            await save_log(f"停止监听直播: {data['room_id']}")
+            save_log(f"停止监听直播: {data['room_id']}")
             await client.close()
     else:
         await ws.send('API KEY ERROR')
 
 # -------------------------------------------------------------------------- Websocket --
+
+# -------------------------------------------------------------------------- Set Listener --
+
+
+@app.listener('before_server_start')
+async def before_server_start(app_, loop):
+    if moca_config.get('save_comments', bool, False) or moca_config.get('save_gifts', bool, False):
+        app_.pool = await get_aio_con_pool_with_default_config()
+        try:
+            if moca_config.get('save_comments', bool, False):
+                async with app_.pool.acquire() as con:
+                    async with con.cursor() as cur:
+                        await cur.execute(comments_table)
+                        await con.commit()
+        except Warning:
+            pass
+        try:
+            if moca_config.get('save_gifts', bool, False):
+                async with app_.pool.acquire() as con:
+                    async with con.cursor() as cur:
+                        await cur.execute(gifts_table)
+                        await con.commit()
+        except Warning:
+            pass
+    else:
+        app_.pool = None
+
+# --------------------------------------------------------------------------Set Listener --
 
 # -- Run Server --------------------------------------------------------------------------
 
@@ -121,16 +178,16 @@ def run_server() -> None:
     try:
         if moca_config.get('api_server_use_ssl', bool, False):
             if moca_config.get('api_server_certfile', str, '') == '':
-                run(save_log('[SSL]无法获取必要设定信息。 <certfile>'))
+                save_log('[SSL]无法获取必要设定信息。 <certfile>')
                 ssl_context = None
             elif moca_config.get('api_server_keyfile', str, '') == '':
-                run(save_log('[SSL]无法获取必要设定信息。 <keyfile>'))
+                save_log('[SSL]无法获取必要设定信息。 <keyfile>')
                 ssl_context = None
             elif not Path(moca_config.get('api_server_certfile', str, '')).is_file():
-                run(save_log('[SSL]文件地址异常。无法找到文件。 <certfile>'))
+                save_log('[SSL]文件地址异常。无法找到文件。 <certfile>')
                 ssl_context = None
             elif not Path(moca_config.get('api_server_keyfile', str, '')).is_file():
-                run(save_log('[SSL]文件地址异常。无法找到文件。 <keyfile>'))
+                save_log('[SSL]文件地址异常。无法找到文件。 <keyfile>')
                 ssl_context = None
             else:
                 ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)

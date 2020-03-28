@@ -60,7 +60,7 @@ async def send_mail(message: str) -> bool:
                        use_tls=moca_config.get('smtp_use_ssl', bool, True))
             return True
         except SMTPException as error:
-            await save_log('邮件发送失败。<SMTPException: %s>' % error)
+            save_log('邮件发送失败。<SMTPException: %s>' % error)
             return False
     else:
         return True

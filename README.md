@@ -1,5 +1,7 @@
 ## 监听哔哩哔哩直播的API服务器
-#### 哔哩哔哩直播的监听部分来自这个项目 https://github.com/xfgryujk/blivedm 
+#### 哔哩哔哩直播的监听部分来自这个项目 https://github.com/xfgryujk/blivedm
+
+#### 请使用Python3.7 
 
 ## 安装方法
 ```bash
