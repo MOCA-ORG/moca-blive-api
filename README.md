@@ -22,6 +22,7 @@ nohup python3 blive_comment_api_server.py > /dev/null &
 
 ## 使用方法
 - 用websocket连接服务器。`ws://<服务器的IP>:服务器的端口/live` 比如 `ws://127.0.0.1:7899/live`
+- 如果想获取未处理的全部数据，可以连接`ws://<服务器的IP>:服务器的端口/raw`
 - 发送认证信息(JSON格式)
 ```json
 {
@@ -87,8 +88,9 @@ nohup python3 blive_comment_api_server.py > /dev/null &
     "mysql_pass": "", // 数据库密码
     "mysql_port": 3306, // 数据库端口
     "mysql_user": "root", // 数据库用户
-    "save_comments": false, // 布尔值，是否保存留言到数据库。
-    "save_gifts": false, // 布尔值，是否保存礼物记录到数据库。
+    "save_comments": false, // 布尔值，是否保存留言到数据库
+    "save_gifts": false, // 布尔值，是否保存礼物记录到数据库
+    "save_raw_data": false, // 布尔值，是否保证未处理的原数据
     "send_mail_if_found_unknown_gift_name": false, // 布尔值， 如果发现新礼物，是否邮件通知。
     "smtp_from_address": "", // 发件人信息
     "smtp_mail_title": "BliveCommentAPI",  // 邮件名

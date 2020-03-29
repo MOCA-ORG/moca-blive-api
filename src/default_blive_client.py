@@ -41,10 +41,10 @@ insert into user_comments(room_id, user_name, comment)
 values(%s, %s, %s);
 """
 
-# -- MyBLiveClient --------------------------------------------------------------------------
+# -- DefaultBLiveClient --------------------------------------------------------------------------
 
 
-class MyBLiveClient(blivedm.BLiveClient):
+class DefaultBLiveClient(blivedm.BLiveClient):
     # 自定义handler
     _COMMAND_HANDLERS = blivedm.BLiveClient._COMMAND_HANDLERS.copy()
 
@@ -104,4 +104,4 @@ class MyBLiveClient(blivedm.BLiveClient):
             'price': message.price,
         }, ensure_ascii=False))
 
-# -------------------------------------------------------------------------- MyBLiveClient --
+# -------------------------------------------------------------------------- DefaultBLiveClient --
