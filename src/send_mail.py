@@ -37,6 +37,7 @@ moca_config.get('smtp_to_address', list, [])
 moca_config.get('smtp_mail_title', str, 'BliveCommentAPI')
 moca_config.get('send_mail_if_found_unknown_gift_name', bool, False)
 moca_config.get('send_mail_if_start_listen', bool, False)
+moca_config.get('send_mail_if_stop_listen', bool, False)
 
 # -------------------------------------------------------------------------- Init --
 
@@ -73,6 +74,13 @@ async def send_unknown_gift_mail(message: str) -> bool:
 
 async def send_start_listen_mail(message: str) -> bool:
     if moca_config.get('send_mail_if_start_listen', bool, False):
+        await send_mail(message)
+    else:
+        return True
+
+
+async def send_stop_listen_mail(message: str) -> bool:
+    if moca_config.get('send_mail_if_stop_listen', bool, False):
         await send_mail(message)
     else:
         return True
