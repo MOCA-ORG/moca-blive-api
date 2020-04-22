@@ -15,15 +15,25 @@
 #     ■■■■■     ■   ■■■    ■■■■■
 
 
+"""
+Copyright (c) 2020.1.17 [el.ideal-ideas]
+This software is released under the MIT License.
+see LICENSE.txt or following URL.
+https://www.el-ideal-ideas.com/MocaLog/LICENSE/
+"""
+
 # -- Imports --------------------------------------------------------------------------
 
-from moca_config import MocaConfig
-from pathlib import Path
+from sanic import Sanic
+from ..sanic import setup_logging
+from .. import core
 
 # -------------------------------------------------------------------------- Imports --
 
-# -- Variables --------------------------------------------------------------------------
+# -- App --------------------------------------------------------------------------
 
-moca_config = MocaConfig('config', Path(__file__).parent.parent, 'config.json', reload_interval=-1)
+setup_logging(core.config.get('log_level', int, 1))
 
-# -------------------------------------------------------------------------- Variables --
+app: Sanic = Sanic('BLive-API-Server')
+
+# -------------------------------------------------------------------------- App --

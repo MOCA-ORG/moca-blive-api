@@ -15,25 +15,24 @@
 #     ■■■■■     ■   ■■■    ■■■■■
 
 
+"""
+Copyright (c) 2020.1.17 [el.ideal-ideas]
+This software is released under the MIT License.
+see LICENSE.txt or following URL.
+https://www.el-ideal-ideas.com/MocaLog/LICENSE/
+"""
+
+
 # -- Imports --------------------------------------------------------------------------
 
-from pathlib import Path
-from moca_core import N
+from .ssl import create_default_context
+from .. import core
 
 # -------------------------------------------------------------------------- Imports --
 
-# -- Variables --------------------------------------------------------------------------
+# -- Init --------------------------------------------------------------------------
 
-log_file_path = str(Path(__file__).parent.parent.joinpath('log').joinpath('BliveCommentAPI.log'))
+core.config.get('certfile', str, default='')
+core.config.get('keyfile', str, default='')
 
-# -------------------------------------------------------------------------- Variables --
-
-# -- Save Log --------------------------------------------------------------------------
-
-
-def save_log(log: str) -> None:
-    with open(log_file_path, mode='a', encoding='utf-8') as file:
-        file.write(log)
-        file.write(N)
-
-# -------------------------------------------------------------------------- Save Log --
+# -------------------------------------------------------------------------- Init --

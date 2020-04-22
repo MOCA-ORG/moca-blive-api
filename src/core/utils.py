@@ -15,19 +15,25 @@
 #     ■■■■■     ■   ■■■    ■■■■■
 
 
-# -- Imports --------------------------------------------------------------------------
+"""
+Copyright (c) 2020.1.17 [el.ideal-ideas]
+This software is released under the MIT License.
+see LICENSE.txt or following URL.
+https://www.el-ideal-ideas.com/MocaLog/LICENSE/
+"""
 
-from asyncio import get_event_loop
-from src.api import run_server
-from src import core
 
-# -------------------------------------------------------------------------- Imports --
+# -- Utilities --------------------------------------------------------------------------
 
-# -- Main --------------------------------------------------------------------------
+def print_info(msg: str) -> None:
+    print('\033[32m' + '[INFO] ' + msg + '\033[0m')
 
-try:
-    run_server()
-except Exception:
-    get_event_loop().run_until_complete(core.logger.save('Unknown error occurred.', core.logger.CRITICAL, True))
 
-# -------------------------------------------------------------------------- Main --
+def print_warning(msg: str) -> None:
+    print('\033[33m' + '[WARNING] ' + msg + '\033[0m')
+
+
+def print_error(msg: str) -> None:
+    print('\033[31m' + '[ERROR] ' + msg + '\033[0m')
+
+# -------------------------------------------------------------------------- Utilities --

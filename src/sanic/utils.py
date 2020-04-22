@@ -15,19 +15,24 @@
 #     ■■■■■     ■   ■■■    ■■■■■
 
 
+"""
+Copyright (c) 2020.1.17 [el.ideal-ideas]
+This software is released under the MIT License.
+see LICENSE.txt or following URL.
+https://www.el-ideal-ideas.com/MocaLog/LICENSE/
+"""
+
+
 # -- Imports --------------------------------------------------------------------------
 
-from asyncio import get_event_loop
-from src.api import run_server
-from src import core
+from sanic.request import Request
 
 # -------------------------------------------------------------------------- Imports --
 
-# -- Main --------------------------------------------------------------------------
+# -- Utils --------------------------------------------------------------------------
 
-try:
-    run_server()
-except Exception:
-    get_event_loop().run_until_complete(core.logger.save('Unknown error occurred.', core.logger.CRITICAL, True))
 
-# -------------------------------------------------------------------------- Main --
+def get_remote_address(request: Request) -> str:
+    return request.remote_addr if request.remote_addr != '' else request.ip
+
+# -------------------------------------------------------------------------- Utils --

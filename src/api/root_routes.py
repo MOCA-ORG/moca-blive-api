@@ -15,19 +15,27 @@
 #     ■■■■■     ■   ■■■    ■■■■■
 
 
+"""
+Copyright (c) 2020.1.17 [el.ideal-ideas]
+This software is released under the MIT License.
+see LICENSE.txt or following URL.
+https://www.el-ideal-ideas.com/MocaLog/LICENSE/
+"""
+
+
 # -- Imports --------------------------------------------------------------------------
 
-from asyncio import get_event_loop
-from src.api import run_server
-from src import core
+from .app import app
+from sanic.request import Request
+from sanic.response import HTTPResponse, text
 
 # -------------------------------------------------------------------------- Imports --
 
-# -- Main --------------------------------------------------------------------------
+# -- Routes --------------------------------------------------------------------------
 
-try:
-    run_server()
-except Exception:
-    get_event_loop().run_until_complete(core.logger.save('Unknown error occurred.', core.logger.CRITICAL, True))
 
-# -------------------------------------------------------------------------- Main --
+@app.route('/mochimochi', methods={'GET'})
+async def mochimochi(request: Request) -> HTTPResponse:
+    return text('もっちもっちにゃんにゃん！')
+
+# -------------------------------------------------------------------------- Routes --

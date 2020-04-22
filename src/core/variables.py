@@ -15,47 +15,42 @@
 #     ■■■■■     ■   ■■■    ■■■■■
 
 
+"""
+Copyright (c) 2020.1.17 [el.ideal-ideas]
+This software is released under the MIT License.
+see LICENSE.txt or following URL.
+https://www.el-ideal-ideas.com/MocaLog/LICENSE/
+"""
+
+
 # -- Imports --------------------------------------------------------------------------
 
-from .send_mail import send_unknown_gift_mail
-from . import blivedm
-from aiohttp import ClientSession
-from ujson import dumps
-from .core import moca_config
+from pathlib import Path
+from moca_log import MocaLog, FileDriver
+from moca_config import MocaConfig
+from multiprocessing import cpu_count
+from socket import gethostname, gethostbyname
+from psutil import virtual_memory, swap_memory
 
 # -------------------------------------------------------------------------- Imports --
 
 # -- Variables --------------------------------------------------------------------------
 
-insert_raw_data = """
-insert into raw_data(room_id, data) values (%s, %s);
-"""
+TOP_DIR = Path(__file__).parent.parent.parent
+LOG_DIR = TOP_DIR.joinpath('log')
+SANIC_EXTENSION_DIR = TOP_DIR.joinpath('src').joinpath('sanic').joinpath('extensions')
+API_EXTENSION_DIR = TOP_DIR.joinpath('src').joinpath('api').joinpath('extensions')
+
+config: MocaConfig = MocaConfig('api_config', TOP_DIR, 'config.json', -1, debug_mode=False)
+
+logger: MocaLog = MocaLog(FileDriver(LOG_DIR.joinpath('api.log')),
+                          config.get('log_level', int, 1),
+                          config.get('__debug__', bool, False))
+
+CPU_COUNT: int = cpu_count()
+HOST_NAME: str = gethostname()
+HOST: str = gethostbyname(HOST_NAME)
+MEMORY_SIZE: int = virtual_memory().total
+SWAP_SIZE: int = swap_memory().total
 
 # -------------------------------------------------------------------------- Variables --
-
-# -- RawBLiveClient --------------------------------------------------------------------------
-
-
-class RawBLiveClient(blivedm.BLiveClient):
-
-    def __init__(self, room_id, uid=0, session: ClientSession = None,
-                 heartbeat_interval=30, ssl=True, loop=None, ws=None, app=None):
-        super().__init__(room_id, uid, session, heartbeat_interval, ssl, loop)
-        self._ws = ws
-        self._app = app
-
-    async def _handle_command(self, command):
-        if isinstance(command, list):
-            for one_command in command:
-                await self._handle_command(one_command)
-            return None
-        else:
-            raw_data = dumps(command, ensure_ascii=False)
-            if moca_config.get('save_raw_data', bool, False):
-                async with self._app.pool.acquire() as con:
-                    async with con.cursor() as cur:
-                        await cur.execute(insert_raw_data, (str(self._room_id), raw_data))
-                        await con.commit()
-            await self._ws.send(raw_data)
-
-# -------------------------------------------------------------------------- RawBLiveClient --

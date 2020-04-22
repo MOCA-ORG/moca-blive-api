@@ -1,8 +1,9 @@
 sanic
-pymysql==0.9.2
+moca_config
+moca_log
 aiomysql
+pymysql
+psutil
 aiosmtplib
 ujson
 aiohttp
-moca_config
-uvloop

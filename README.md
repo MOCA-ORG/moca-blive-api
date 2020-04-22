@@ -2,6 +2,7 @@
 #### 哔哩哔哩直播的监听部分来自这个项目 https://github.com/xfgryujk/blivedm
 
 #### 请使用Python3.7 
+#### 仅在Mac和Linux系统进行过检测，Windows系统没测试过
 
 ## 安装方法
 ```bash
@@ -28,30 +29,28 @@ nohup python3 blive_comment_api_server.py > /dev/null &
 {
    "cmd": "start",
    "room_id": "想监听的直播间的房间号",
-   "api_key": "自定义的API秘钥。需要和config.json文件里面一致"
+   "secret_key": "自定义的API秘钥。需要和config.json文件里面一致"
 }
 ```
+- 之后服务器会实时向客服端发送直播信息。
+
 ## 什么是房间号
 - 如果直播间的URL是`https://live.bilibili.com/123456`
 - 那么房间号就是`123456`
 - 房间号是每个账号固定的，不会改变。
 
-- 之后服务器会实时向客服端发送直播信息。
-
 ## 设定
 #### 全部设定都在 config.json 文件内
-```json
+
+```
 {
-    "api_key": "API秘钥",
-    "api_server_access_log": false, // 布尔值, 是否保存访问记录
-    "api_server_certfile": "", // 如果使用SSL请配置认证文件地址
-    "api_server_debug": false,  // 布尔值， 是否开启debug模式
-    "api_server_host": "0.0.0.0", // 服务器IP地址
-    "api_server_keyfile": "",  // 如果使用SSL请配置认证文件地址
-    "api_server_port": 7899,  // 服务器端口
-    "api_server_use_ipv6": false,  // 布尔值，是否使用IPv6
-    "api_server_use_ssl": false,  // 布尔值，是否使用SSL
-    "gift_id_list": [  // 已知的礼物ID，用于检测B站出新礼物。
+    "api_server_access_log": true, // 是否记录访问记录
+    "api_server_debug": false, // 是否开启Sanic服务器的debug模式
+    "api_server_host": "0.0.0.0", // 服务器IP
+    "api_server_port": 7899, // 服务器端口 
+    "api_server_use_ipv6": false, // 是否用IPv6
+    "api_server_worker_number": 8, // 可使用的进程数量
+    "blive_comment_api_gift_id_list": [  // 已知礼物ID清单
         "1",
         "3",
         "25",
@@ -81,26 +80,37 @@ nohup python3 blive_comment_api_server.py > /dev/null &
         "550004",
         "550005",
         "30205",
-        "20002"
+        "20002",
+        "30508"
     ],
-    "mysql_dbname": "blive_comment_api", // 数据库名
-    "mysql_host": "127.0.0.1",  // 数据库IP
-    "mysql_pass": "", // 数据库密码
-    "mysql_port": 3306, // 数据库端口
-    "mysql_user": "root", // 数据库用户
-    "save_comments": false, // 布尔值，是否保存留言到数据库
-    "save_gifts": false, // 布尔值，是否保存礼物记录到数据库
-    "save_raw_data": false, // 布尔值，是否保证未处理的原数据
-    "send_mail_if_found_unknown_gift_name": false, // 布尔值， 如果发现新礼物，是否邮件通知。
-    "smtp_from_address": "", // 发件人信息
-    "smtp_mail_title": "BliveCommentAPI",  // 邮件名
-    "smtp_server_host": "", // 邮件服务器IP
-    "smtp_server_pass": "", // 邮件服务器密码
-    "smtp_server_port": 25, // 邮件服务器端口
-    "smtp_server_user": "", // 邮件服务器用户名
-    "smtp_to_address": [], // 邮件接收邮箱清单
-    "smtp_use_ssl": true, // 发送邮件是否使用SSL
-    "send_mail_if_start_listen": false // 开始监控直播间的时候是否发送开始通知
+    "blive_comment_api_save_comments": false,  // 是否保存留言到数据库
+    "blive_comment_api_save_gifts": false, // 是否保存礼物记录到数据库
+    "blive_comment_api_save_raw_data": false, // 是否保存json数据到数据库
+    "blive_comment_api_secret_key": "请自定义一个字符串",  // API秘钥，请设定一个随机的字符串
+    "blive_comment_api_send_mail_if_found_unknown_gift_name": false, // 如果发现未知礼物ID，发送邮件通知
+    "blive_comment_api_send_mail_if_start_listen": false,  // 如果开始监控直播，发送邮件通知
+    "blive_comment_api_send_mail_if_stop_listen": false,  // 如果停止监控直播， 发送邮件通知
+    "certfile": "",  // 如果需要SSL请填写认证文件地址
+    "keyfile": "",  // 如果需要SSL请填写认证文件地址
+    "log_level": 1,  // 日志等级
+    "mysql_dbname": "blive_comment_api",   // 数据库名
+    "mysql_host": "127.0.0.1",   // 数据库IP
+    "mysql_max_size": 10,   //连接池上限
+    "mysql_min_size": 1,   // 连接池下限
+    "mysql_pass": "",   // 数据库密码
+    "mysql_port": 3306,   // 数据库端口
+    "mysql_user": "root",   // 数据库用户名
+    "send_notification_when_critical_error_occurred": false,   // 如果发生了无法解决的异常，尝试邮件通知
+    "send_notification_when_error_occurred": false,   // 如果发生了异常， 尝试邮件通知
+    "smtp_host": "",   // 邮件服务器IP
+    "smtp_notification_from_address": "",   // 发件人邮箱
+    "smtp_notification_pass": "",   // 邮件服务器密码
+    "smtp_notification_to_address": [   // 接受人邮箱清单
+        ""
+    ],
+    "smtp_notification_user": "",    // 邮件服务器用户名
+    "smtp_port": 465,  // 邮件服务器 端口
+    "smtp_use_ssl": true   // 是否用ssl访问邮件服务器
 }
 ```
 
@@ -146,8 +156,6 @@ nohup python3 blive_comment_api_server.py > /dev/null &
 ## HTTP功能
 - `/status`
     - 如果系统在运行，返回`BliveCommentAPI is running.`
-- `/online`
-    - 返回正在监听的直播间的清单。
     
 ## License (MIT)
 MIT License

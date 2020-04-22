@@ -15,19 +15,31 @@
 #     ■■■■■     ■   ■■■    ■■■■■
 
 
+"""
+Copyright (c) 2020.1.17 [el.ideal-ideas]
+This software is released under the MIT License.
+see LICENSE.txt or following URL.
+https://www.el-ideal-ideas.com/MocaLog/LICENSE/
+"""
+
+
 # -- Imports --------------------------------------------------------------------------
 
 from .send_mail import send_unknown_gift_mail
 from . import blivedm
 from aiohttp import ClientSession
 from ujson import dumps
-from .core import moca_config
+from ... import core
 
 # -------------------------------------------------------------------------- Imports --
 
 # -- Init --------------------------------------------------------------------------
 
-moca_config.get('gift_id_list', list, [])
+core.config.get('blive_comment_api_gift_id_list', list, ["1", "3", "25", "7", "8", "39", "20003", "20004", "20008",
+                                                         "20014", "30004", "30046", "30063", "30064", "30072", "30087",
+                                                         "30090", "30135", "30136", "30143", "30144", "30145", "30204",
+                                                         "550001", "550002", "550003", "550004", "550005", "30205",
+                                                         "20002", "30508"])
 
 # -------------------------------------------------------------------------- Init --
 
@@ -55,8 +67,8 @@ class DefaultBLiveClient(blivedm.BLiveClient):
         self._app = app
 
     async def _on_receive_danmaku(self, danmaku: blivedm.DanmakuMessage):
-        if moca_config.get('save_comments', bool, False):
-            async with self._app.pool.acquire() as con:
+        if core.config.get('blive_comment_api_save_comments', bool, False):
+            async with self._app.mysql_pool.acquire() as con:
                 async with con.cursor() as cur:
                     await cur.execute(insert_comment, (self._room_id, str(danmaku.uname), str(danmaku.msg)))
                     await con.commit()
@@ -67,13 +79,14 @@ class DefaultBLiveClient(blivedm.BLiveClient):
         }, ensure_ascii=False))
 
     async def _on_receive_gift(self, gift: blivedm.GiftMessage):
-        gift_id_list = moca_config.get('gift_id_list', list, [])
+        gift_id_list = core.config.get('blive_comment_api_gift_id_list', list, [])
         if str(gift.gift_id) not in gift_id_list:
             gift_id_list.append(str(gift.gift_id))
-            moca_config.set('gift_id_list', gift_id_list)
-            await send_unknown_gift_mail(f'检测到未登记的礼物ID。 Name: {gift.gift_name}, ID: {gift.gift_id}')
-        if moca_config.get('save_gifts', bool, False):
-            async with self._app.pool.acquire() as con:
+            core.config.set('gift_id_list', gift_id_list)
+            await send_unknown_gift_mail(f'检测到未登记的礼物ID。 Name: {gift.gift_name}, ID: {gift.gift_id}',
+                                         self._app.logger)
+        if core.config.get('blive_comment_api_save_gifts', bool, False):
+            async with self._app.mysql_pool.acquire() as con:
                 async with con.cursor() as cur:
                     await cur.execute(insert_gift, (self._room_id, str(gift.uname), str(gift.gift_id),
                                                     str(gift.gift_name), str(gift.num), str(gift.coin_type),
