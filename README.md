@@ -22,8 +22,8 @@ nohup python3 blive_comment_api_server.py > /dev/null &
 ```
 
 ## 使用方法
-- 用websocket连接服务器。`ws://<服务器的IP>:服务器的端口/live` 比如 `ws://127.0.0.1:7899/live`
-- 如果想获取未处理的全部数据，可以连接`ws://<服务器的IP>:服务器的端口/raw`
+- 用websocket连接服务器。`ws://<服务器的IP>:服务器的端口/blive/live` 比如 `ws://127.0.0.1:7899/blive/live`
+- 如果想获取未处理的全部数据，可以连接`ws://<服务器的IP>:服务器的端口/blive/raw`
 - 发送认证信息(JSON格式)
 ```json
 {
