@@ -25,7 +25,7 @@ https://www.el-ideal-ideas.com/MocaLog/LICENSE/
 
 # -- Imports --------------------------------------------------------------------------
 
-from .ssl import create_default_context
+from .ssl import create_ssl_context
 from .. import core
 
 # -------------------------------------------------------------------------- Imports --

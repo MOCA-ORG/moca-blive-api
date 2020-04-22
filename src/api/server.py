@@ -31,7 +31,7 @@ from multiprocessing import current_process
 from moca_log import MocaLog, FileDriver
 from .app import app
 from ..mysql import create_aio_pool_with_default_config
-from ..ssl import create_default_context
+from ..ssl import create_ssl_context
 
 # -------------------------------------------------------------------------- Imports --
 
@@ -83,7 +83,7 @@ async def after_server_stop(app_, loop):
 
 def run_server():
     run_websocket_server(app,
-                         create_default_context(),
+                         create_ssl_context(),
                          core.config.get('api_server_host', str, '0.0.0.0'),
                          core.config.get('api_server_port', int, 7899),
                          core.config.get('api_server_access_log', bool, True),
