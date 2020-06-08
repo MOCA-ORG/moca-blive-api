@@ -1,4 +1,4 @@
-## 通过websocket和JSON像前端app提供关于哔哩哔哩直播的各种API
+## 通过websocket和JSON向前端app提供关于哔哩哔哩直播的各种API
 
 #### 哔哩哔哩直播的监听部分来自这个项目 https://github.com/xfgryujk/blivedm
 
