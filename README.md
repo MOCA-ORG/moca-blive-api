@@ -1,4 +1,5 @@
-## 监听哔哩哔哩直播的API服务器
+## 通过websocket和JSON像前端app提供关于哔哩哔哩直播的各种API
+
 #### 哔哩哔哩直播的监听部分来自这个项目 https://github.com/xfgryujk/blivedm
 
 #### 请使用Python3.7 
@@ -149,7 +150,7 @@ nohup python3 blive_comment_api_server.py > /dev/null &
   "cmd": "super_chat",
   "uname": "用户名",
   "msg": "留言",
-  "price": "金额",
+  "price": "金额"
 }
 ```
 
