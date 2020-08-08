@@ -21,3 +21,4 @@ redis
 mycli
 litecli
 setproctitle
+tinydb
