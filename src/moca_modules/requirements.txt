@@ -1,7 +1,7 @@
 pytz
 GitPython
 aiosmtplib
-PyMySQL
+PyMySQL==0.9.2
 aiomysql
 aiofiles
 aioredis
