@@ -22,3 +22,4 @@ mycli
 litecli
 setproctitle
 tinydb
+Pillow
