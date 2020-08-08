@@ -27,7 +27,7 @@ https://www.el-ideal-ideas.com/MocaSystem/LICENSE/
 
 from typing import *
 from pathlib import Path
-from dill import dump, load
+from pickle import dump, load
 from time import sleep
 from gc import collect
 from threading import Thread
