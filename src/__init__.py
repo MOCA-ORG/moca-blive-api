@@ -25,13 +25,6 @@ https://www.el-ideal-ideas.com/MocaSystem/LICENSE/
 
 # -- Imports --------------------------------------------------------------------------
 
-from .variables import TOP_DIR, LOG_DIR, moca_config, moca_log, VERSION
-from src.moca_modules.moca_utils import set_process_name
+from .console_script import console_script
 
 # -------------------------------------------------------------------------- Imports --
-
-# -- Init --------------------------------------------------------------------------
-
-set_process_name('MocaBliveAPI - Main Process')
-
-# -------------------------------------------------------------------------- Init --

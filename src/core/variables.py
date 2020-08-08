@@ -16,41 +16,33 @@
 
 
 """
-Copyright (c) 2020.1.17 [el.ideal-ideas]
+Copyright (c) 2020.5.28 [el.ideal-ideas]
 This software is released under the MIT License.
 see LICENSE.txt or following URL.
-https://www.el-ideal-ideas.com/MocaLog/LICENSE/
+https://www.el-ideal-ideas.com/MocaSystem/LICENSE/
 """
 
 
 # -- Imports --------------------------------------------------------------------------
 
+from src.moca_modules.moca_config import MocaFileConfig
+from src.moca_modules.moca_log import MocaFileLog
 from pathlib import Path
-from moca_log import MocaLog, FileDriver
-from moca_config import MocaConfig
-from multiprocessing import cpu_count
-from socket import gethostname, gethostbyname
-from psutil import virtual_memory, swap_memory
 
 # -------------------------------------------------------------------------- Imports --
 
 # -- Variables --------------------------------------------------------------------------
 
-TOP_DIR = Path(__file__).parent.parent.parent
-LOG_DIR = TOP_DIR.joinpath('log')
-SANIC_EXTENSION_DIR = TOP_DIR.joinpath('src').joinpath('sanic').joinpath('extensions')
-API_EXTENSION_DIR = TOP_DIR.joinpath('src').joinpath('api').joinpath('extensions')
+VERSION: str = '1.1.0'
 
-config: MocaConfig = MocaConfig('api_config', TOP_DIR, 'config.json', -1, debug_mode=False)
+TOP_DIR: Path = Path(__file__).parent.parent.parent
+LOG_DIR: Path = TOP_DIR.joinpath('log')
+LOG_DIR.mkdir(parents=True, exist_ok=True)
 
-logger: MocaLog = MocaLog(FileDriver(LOG_DIR.joinpath('api.log')),
-                          config.get('log_level', int, 1),
-                          config.get('__debug__', bool, False))
+moca_config: MocaFileConfig = MocaFileConfig(TOP_DIR.joinpath('config.json'))
 
-CPU_COUNT: int = cpu_count()
-HOST_NAME: str = gethostname()
-HOST: str = gethostbyname(HOST_NAME)
-MEMORY_SIZE: int = virtual_memory().total
-SWAP_SIZE: int = swap_memory().total
+moca_log: MocaFileLog = MocaFileLog(
+    LOG_DIR.joinpath('usage.log'), LOG_DIR.joinpath('error.log'), log_rotate=moca_config.get('log_rotate', False)
+)
 
 # -------------------------------------------------------------------------- Variables --

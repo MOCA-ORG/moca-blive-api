@@ -25,13 +25,33 @@ https://www.el-ideal-ideas.com/MocaSystem/LICENSE/
 
 # -- Imports --------------------------------------------------------------------------
 
-from .variables import TOP_DIR, LOG_DIR, moca_config, moca_log, VERSION
-from src.moca_modules.moca_utils import set_process_name
+from . import blivedm
+from typing import *
+from ujson import dumps
+from src.moca_modules.moca_config import MocaFileConfig
+from sanic import Sanic
+from sanic.websocket import WebSocketConnection
 
 # -------------------------------------------------------------------------- Imports --
 
-# -- Init --------------------------------------------------------------------------
+# -- RawBLiveClient --------------------------------------------------------------------------
 
-set_process_name('MocaBliveAPI - Main Process')
 
-# -------------------------------------------------------------------------- Init --
+class RawBLiveClient(blivedm.BLiveClient):
+
+    def __init__(self, room_id: str, ws: WebSocketConnection, app: Sanic, config: MocaFileConfig):
+        super().__init__(room_id)
+        self._ws = ws
+        self._app = app
+        self._config = config
+
+    async def _handle_command(self, command):
+        if isinstance(command, list):
+            for one_command in command:
+                await self._handle_command(one_command)
+            return None
+        else:
+            raw_data = dumps(command, ensure_ascii=False)
+            await self._ws.send(raw_data)
+
+# -------------------------------------------------------------------------- RawBLiveClient --
