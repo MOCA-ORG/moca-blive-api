@@ -29,7 +29,7 @@ from typing import *
 from leveldb import LevelDB, LevelDBError
 from .moca_base_class import MocaClassCache, MocaNamedInstance
 from pathlib import Path
-from dill import dumps, loads
+from pickle import dumps, loads
 
 # -------------------------------------------------------------------------- Imports --
 

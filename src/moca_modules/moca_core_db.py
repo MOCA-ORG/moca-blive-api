@@ -28,7 +28,7 @@ https://www.el-ideal-ideas.com/MocaSystem/LICENSE/
 from typing import *
 from leveldb import LevelDB, LevelDBError
 from pathlib import Path
-from dill import dumps, loads
+from pickle import dumps, loads
 from .moca_utils import print_warning
 from tinydb import TinyDB, JSONStorage, Query
 from tinydb.middlewares import CachingMiddleware
