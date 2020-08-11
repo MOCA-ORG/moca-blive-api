@@ -43,7 +43,7 @@
  "log_rotate": false,
  "mysql_db": "moca_blive_api",
  "mysql_host": "127.0.0.1",
- "mysql_pass": "",
+ "mysql_pass": "mochimochi",
  "mysql_port": 3306,
  "mysql_user": "root",
  "origin": "*",

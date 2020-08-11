@@ -196,14 +196,16 @@ try:
         core_json = loads(__core_json_file.read())
 except FileNotFoundError:
     try:
-        __response: Response = get('https://www.el-ideal-ideas.com/moca/data/core.json')
+        __response: Response = get('https://www.el-ideal-ideas.com/moca/data/core.json', timeout=5)
         __data = __response.content.decode('utf-8')
         with open(str(Path(__file__).parent.joinpath('core.json')), 'w', encoding='utf-8') as __core_json_file:
             __core_json_file.write(__data)
             core_json = loads(__data)
         del __response, __data
     except RequestException:
-        print('Missing core.json file.')
+        print("Missing core.json file. "
+              "can't download core.json from "
+              "https://www.el-ideal-ideas.com/moca/data/core.json")
         exit(1)
 del __core_json_file
 
@@ -216,7 +218,7 @@ OFFICIAL_SERVER = core_json.get('official_server', 'https://www.el-ideal-ideas.c
 
 SELF_IP: str = ''
 try:
-    __res: Response = get(f'{OFFICIAL_SERVER}moca/apis/ip.php')
+    __res: Response = get(f'{OFFICIAL_SERVER}moca/apis/ip.php', timeout=5)
     SELF_IP = __res.content.decode('utf-8')
     del __res
 except RequestException:
