@@ -242,22 +242,22 @@ async def live(request: Request, ws: WebSocketConnection):
     origin: str = request.headers.get('origin', 'None')
     if (info.get('room_id') is None) or (info.get('secret_key') is None):
         await app.moca_log.save(
-            f'IP: 连接失败。类型: RawBLiveClient, 状态: 数据格式错误, 房间号: {info.get("room_id")}', 1
+            f'IP: 连接失败。类型: DefaultBLiveClient, 状态: 数据格式错误, 房间号: {info.get("room_id")}', 1
         )
         await ws.send('DENIED')
     elif (allowed_origin != '*') and not origin.startswith(allowed_origin):
         await app.moca_log.save(
-            f'IP: 连接失败。类型: RawBLiveClient, 状态: origin认证失败, 房间号: {info.get("room_id")}', 1
+            f'IP: 连接失败。类型: DefaultBLiveClient, 状态: origin认证失败, 房间号: {info.get("room_id")}', 1
         )
         await ws.send('DENIED')
     elif info.get('secret_key', '') != app.moca_config.get('secret_key', ''):
         await app.moca_log.save(
-            f'IP: 连接失败。类型: RawBLiveClient, 状态: secret_key认证失败, 房间号: {info.get("room_id")}', 1
+            f'IP: 连接失败。类型: DefaultBLiveClient, 状态: secret_key认证失败, 房间号: {info.get("room_id")}', 1
         )
         await ws.send('DENIED')
     else:
         await app.moca_log.save(
-            f'IP: 开始连接。类型: RawBLiveClient, 状态: 成功, 房间号: {info.get("room_id")}', 1
+            f'IP: 开始连接。类型: DefaultBLiveClient, 状态: 成功, 房间号: {info.get("room_id")}', 1
         )
         count = await app.redis.increment('moca-blive-api-client-count' + info['room_id'])
         if count == 1:
@@ -276,7 +276,7 @@ async def live(request: Request, ws: WebSocketConnection):
                     await ws.send(dumps(item))
         finally:
             await app.moca_log.save(
-                f'IP: 停止连接。类型: RawBLiveClient, 状态: 成功, 房间号: {info.get("room_id")}', 1
+                f'IP: 停止连接。类型: DefaultBLiveClient, 状态: 成功, 房间号: {info.get("room_id")}', 1
             )
             count = await app.redis.decrement('moca-blive-api-client-count' + info['room_id'])
             if count == 0:
