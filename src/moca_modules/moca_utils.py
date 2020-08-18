@@ -49,6 +49,7 @@ from pickle import dumps as p_dumps, loads as p_loads
 from gzip import compress, decompress
 from multiprocessing import current_process
 from setproctitle import setproctitle
+from html import escape, unescape
 
 # -------------------------------------------------------------------------- Imports --
 
@@ -655,5 +656,13 @@ def print_only_in_main_process(*args, sep=' ', end='\n', file=None) -> None:
 
 def set_process_name(name: str) -> None:
     setproctitle(name)
+
+
+def html_escape(text: str) -> str:
+    return escape(text)
+
+
+def html_unescape(text: str) -> str:
+    return unescape(text)
 
 # -------------------------------------------------------------------------- Utilities --

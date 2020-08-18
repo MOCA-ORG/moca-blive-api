@@ -240,12 +240,12 @@ class MocaSanic(MocaNamedInstance, MocaClassCache):
         """Initialize the sanic application."""
         # ------ Version ------
         @self._app.route('/version', methods={'GET', 'POST', 'OPTIONS'})
-        async def ping(request: Request) -> HTTPResponse:
+        async def version(request: Request) -> HTTPResponse:
             return text(MocaSanic.VERSION)
 
         # ------ License ------
         @self._app.route('/license', methods={'GET', 'POST', 'OPTIONS'})
-        async def ping(request: Request) -> HTTPResponse:
+        async def show_license(request: Request) -> HTTPResponse:
             return text(LICENSE)
 
         # ------ Mochi ------
