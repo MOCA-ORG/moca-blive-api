@@ -210,7 +210,7 @@ except FileNotFoundError:
 del __core_json_file
 
 # timezone
-TIME_ZONE = environ.get('TIME_ZONE', core_json.get('timezone', 'Asia/Beijing'))
+TIME_ZONE = environ.get('MOCA_TIME_ZONE', environ.get('TIME_ZONE', core_json.get('timezone', 'Asia/Beijing')))
 tz = timezone(TIME_ZONE)
 
 # official server
