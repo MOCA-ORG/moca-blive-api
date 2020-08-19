@@ -665,4 +665,12 @@ def html_escape(text: str) -> str:
 def html_unescape(text: str) -> str:
     return unescape(text)
 
+
+def word_block(text: str, blocked_words: List[str], replace: str = '****') -> str:
+    tmp_string: str = text
+    for word in blocked_words:
+        if word in tmp_string:
+            tmp_string = tmp_string.replace(word, replace)
+    return tmp_string
+
 # -------------------------------------------------------------------------- Utilities --
