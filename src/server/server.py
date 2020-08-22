@@ -34,9 +34,6 @@ from sanic.request import Request
 from sanic.response import HTTPResponse, text, json
 from sanic.websocket import WebSocketConnection
 from sanic.exceptions import InvalidUsage
-from src.moca_modules.moca_access import MocaAccess
-from src.moca_modules.moca_mysql import MocaMysql
-from src.moca_modules.moca_redis import MocaRedis
 from src.blive_api import RawBLiveClient, InitError
 from ujson import loads
 from sys import executable
@@ -46,23 +43,6 @@ from src.database import get_comments, get_gifts
 # -------------------------------------------------------------------------- Imports --
 
 # -- Variables --------------------------------------------------------------------------
-
-access: MocaAccess = MocaAccess(
-    MocaRedis(
-        moca_config.get('redis_host', '127.0.0.1'),
-        moca_config.get('redis_port', 6379),
-        moca_config.get('redis_pass', 'pass'),
-        moca_config.get('redis_db_index', 0),
-    ),
-    MocaMysql(
-        moca_config.get('mysql_host', '127.0.0.1'),
-        moca_config.get('mysql_port', 3306),
-        moca_config.get('mysql_user', 'root'),
-        moca_config.get('mysql_pass', 'pass'),
-        moca_config.get('mysql_db', 'moca_blive_api'),
-    ),
-    '64 per seconds'
-)
 
 allowed_origin: str = moca_config.get('origin')
 
