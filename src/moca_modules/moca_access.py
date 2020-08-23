@@ -275,4 +275,10 @@ class MocaAccess(MocaClassCache, MocaNamedInstance):
                 return False
         return True
 
+    def rate_limit(self, limit: str, request: Request, key: str = '') -> bool:
+        for item in parse_many(limit):
+            if not self._ip_window.hit(item, self.get_remote_address(request), key):
+                return False
+        return True
+
 # -------------------------------------------------------------------------- MocaAccess--
