@@ -241,7 +241,7 @@ class MocaAccess(MocaClassCache, MocaNamedInstance):
         else:
             data = cache
         referer = str(request.headers.get('referer', request.headers.get('origin')))
-        if not referer.startswith(data[1]):
+        if (data[1] != '*') and (not referer.startswith(data[1])):
             return 2, 'invalid referer.'
         if data[2] != '*':
             for item in data[2]:
