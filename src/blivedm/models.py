@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import json
 from typing import *
 
@@ -20,8 +19,8 @@ class HeartbeatMessage:
     """
 
     def __init__(
-        self,
-        popularity: int = None,
+            self,
+            popularity: int = None,
     ):
         self.popularity: int = popularity
 
@@ -78,46 +77,46 @@ class DanmakuMessage:
     """
 
     def __init__(
-        self,
-        mode: int = None,
-        font_size: int = None,
-        color: int = None,
-        timestamp: int = None,
-        rnd: int = None,
-        uid_crc32: str = None,
-        msg_type: int = None,
-        bubble: int = None,
-        dm_type: int = None,
-        emoticon_options: Union[dict, str] = None,
-        voice_config: Union[dict, str] = None,
-        mode_info: dict = None,
+            self,
+            mode: int = None,
+            font_size: int = None,
+            color: int = None,
+            timestamp: int = None,
+            rnd: int = None,
+            uid_crc32: str = None,
+            msg_type: int = None,
+            bubble: int = None,
+            dm_type: int = None,
+            emoticon_options: Union[dict, str] = None,
+            voice_config: Union[dict, str] = None,
+            mode_info: dict = None,
 
-        msg: str = None,
+            msg: str = None,
 
-        uid: int = None,
-        uname: str = None,
-        admin: int = None,
-        vip: int = None,
-        svip: int = None,
-        urank: int = None,
-        mobile_verify: int = None,
-        uname_color: str = None,
+            uid: int = None,
+            uname: str = None,
+            admin: int = None,
+            vip: int = None,
+            svip: int = None,
+            urank: int = None,
+            mobile_verify: int = None,
+            uname_color: str = None,
 
-        medal_level: str = None,
-        medal_name: str = None,
-        runame: str = None,
-        medal_room_id: int = None,
-        mcolor: int = None,
-        special_medal: str = None,
+            medal_level: str = None,
+            medal_name: str = None,
+            runame: str = None,
+            medal_room_id: int = None,
+            mcolor: int = None,
+            special_medal: str = None,
 
-        user_level: int = None,
-        ulevel_color: int = None,
-        ulevel_rank: str = None,
+            user_level: int = None,
+            ulevel_color: int = None,
+            ulevel_rank: str = None,
 
-        old_title: str = None,
-        title: str = None,
+            old_title: str = None,
+            title: str = None,
 
-        privilege_type: int = None,
+            privilege_type: int = None,
     ):
         self.mode: int = mode
         self.font_size: int = font_size
@@ -272,22 +271,22 @@ class GiftMessage:
     """
 
     def __init__(
-        self,
-        gift_name: str = None,
-        num: int = None,
-        uname: str = None,
-        face: str = None,
-        guard_level: int = None,
-        uid: int = None,
-        timestamp: int = None,
-        gift_id: int = None,
-        gift_type: int = None,
-        action: str = None,
-        price: int = None,
-        rnd: str = None,
-        coin_type: str = None,
-        total_coin: int = None,
-        tid: str = None,
+            self,
+            gift_name: str = None,
+            num: int = None,
+            uname: str = None,
+            face: str = None,
+            guard_level: int = None,
+            uid: int = None,
+            timestamp: int = None,
+            gift_id: int = None,
+            gift_type: int = None,
+            action: str = None,
+            price: int = None,
+            rnd: str = None,
+            coin_type: str = None,
+            total_coin: int = None,
+            tid: str = None,
     ):
         self.gift_name = gift_name
         self.num = num
@@ -342,16 +341,16 @@ class GuardBuyMessage:
     """
 
     def __init__(
-        self,
-        uid: int = None,
-        username: str = None,
-        guard_level: int = None,
-        num: int = None,
-        price: int = None,
-        gift_id: int = None,
-        gift_name: str = None,
-        start_time: int = None,
-        end_time: int = None,
+            self,
+            uid: int = None,
+            username: str = None,
+            guard_level: int = None,
+            num: int = None,
+            price: int = None,
+            gift_id: int = None,
+            gift_name: str = None,
+            start_time: int = None,
+            end_time: int = None,
     ):
         self.uid: int = uid
         self.username: str = username
@@ -404,26 +403,26 @@ class SuperChatMessage:
     """
 
     def __init__(
-        self,
-        price: int = None,
-        message: str = None,
-        message_trans: str = None,
-        start_time: int = None,
-        end_time: int = None,
-        time: int = None,
-        id_: int = None,
-        gift_id: int = None,
-        gift_name: str = None,
-        uid: int = None,
-        uname: str = None,
-        face: str = None,
-        guard_level: int = None,
-        user_level: int = None,
-        background_bottom_color: str = None,
-        background_color: str = None,
-        background_icon: str = None,
-        background_image: str = None,
-        background_price_color: str = None,
+            self,
+            price: int = None,
+            message: str = None,
+            message_trans: str = None,
+            start_time: int = None,
+            end_time: int = None,
+            time: int = None,
+            id_: int = None,
+            gift_id: int = None,
+            gift_name: str = None,
+            uid: int = None,
+            uname: str = None,
+            face: str = None,
+            guard_level: int = None,
+            user_level: int = None,
+            background_bottom_color: str = None,
+            background_color: str = None,
+            background_icon: str = None,
+            background_image: str = None,
+            background_price_color: str = None,
     ):
         self.price: int = price
         self.message: str = message
@@ -478,8 +477,8 @@ class SuperChatDeleteMessage:
     """
 
     def __init__(
-        self,
-        ids: List[int] = None,
+            self,
+            ids: List[int] = None,
     ):
         self.ids: List[int] = ids
 

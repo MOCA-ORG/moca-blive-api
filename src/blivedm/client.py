@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import asyncio
 import collections
 import enum
@@ -89,13 +88,13 @@ class BLiveClient:
     """
 
     def __init__(
-        self,
-        room_id,
-        uid=0,
-        session: Optional[aiohttp.ClientSession] = None,
-        heartbeat_interval=30,
-        ssl: Union[bool, ssl_.SSLContext] = True,
-        loop: Optional[asyncio.BaseEventLoop] = None,
+            self,
+            room_id,
+            uid=0,
+            session: Optional[aiohttp.ClientSession] = None,
+            heartbeat_interval=30,
+            ssl: Union[bool, ssl_.SSLContext] = True,
+            loop: Optional[asyncio.BaseEventLoop] = None,
     ):
         # 用来init_room的临时房间ID，可以用短ID
         self._tmp_room_id = room_id
@@ -267,15 +266,15 @@ class BLiveClient:
     async def _init_room_id_and_owner(self):
         try:
             async with self._session.get(
-                ROOM_INIT_URL,
-                headers={
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
-                                  ' Chrome/102.0.0.0 Safari/537.36'
-                },
-                params={
-                    'room_id': self._tmp_room_id
-                },
-                ssl=self._ssl
+                    ROOM_INIT_URL,
+                    headers={
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
+                                      ' Chrome/102.0.0.0 Safari/537.36'
+                    },
+                    params={
+                        'room_id': self._tmp_room_id
+                    },
+                    ssl=self._ssl
             ) as res:
                 if res.status != 200:
                     logger.warning('room=%d _init_room_id_and_owner() failed, status=%d, reason=%s', self._tmp_room_id,
@@ -303,16 +302,16 @@ class BLiveClient:
     async def _init_host_server(self):
         try:
             async with self._session.get(
-                DANMAKU_SERVER_CONF_URL,
-                headers={
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
-                                  ' Chrome/102.0.0.0 Safari/537.36'
-                },
-                params={
-                    'id': self._room_id,
-                    'type': 0
-                },
-                ssl=self._ssl
+                    DANMAKU_SERVER_CONF_URL,
+                    headers={
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
+                                      ' Chrome/102.0.0.0 Safari/537.36'
+                    },
+                    params={
+                        'id': self._room_id,
+                        'type': 0
+                    },
+                    ssl=self._ssl
             ) as res:
                 if res.status != 200:
                     logger.warning('room=%d _init_host_server() failed, status=%d, reason=%s', self._room_id,
@@ -386,13 +385,13 @@ class BLiveClient:
                 # 连接
                 host_server = self._host_server_list[retry_count % len(self._host_server_list)]
                 async with self._session.ws_connect(
-                    f"wss://{host_server['host']}:{host_server['wss_port']}/sub",
-                    headers={
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
-                                      ' Chrome/102.0.0.0 Safari/537.36'
-                    },
-                    receive_timeout=self._heartbeat_interval + 5,
-                    ssl=self._ssl
+                        f"wss://{host_server['host']}:{host_server['wss_port']}/sub",
+                        headers={
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
+                                          ' Chrome/102.0.0.0 Safari/537.36'
+                        },
+                        receive_timeout=self._heartbeat_interval + 5,
+                        ssl=self._ssl
                 ) as websocket:
                     self._websocket = websocket
                     await self._on_ws_connect()
