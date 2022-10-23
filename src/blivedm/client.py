@@ -84,7 +84,6 @@ class BLiveClient:
     :param session: cookie、连接池
     :param heartbeat_interval: 发送心跳包的间隔时间（秒）
     :param ssl: True表示用默认的SSLContext验证，False表示不验证，也可以传入SSLContext
-    :param loop: 协程事件循环
     :param opts: 用于传递任意变量到处理器
     """
 
@@ -95,7 +94,6 @@ class BLiveClient:
             session: Optional[aiohttp.ClientSession] = None,
             heartbeat_interval=30,
             ssl: Union[bool, ssl_.SSLContext] = True,
-            loop: Optional[asyncio.BaseEventLoop] = None,
             opts: Optional[Dict[str, Any]] = None
     ):
         # 这个变量会被直接传递给处理器
@@ -105,21 +103,12 @@ class BLiveClient:
         self._tmp_room_id = room_id
         self._uid = uid
 
-        if loop is not None:
-            self._loop = loop
-        elif session is not None:
-            self._loop = session.loop  # noqa
-        else:
-            self._loop = asyncio.get_event_loop()
-
         if session is None:
-            self._session = aiohttp.ClientSession(loop=self._loop, timeout=aiohttp.ClientTimeout(total=10))
+            self._session = aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10))
             self._own_session = True
         else:
             self._session = session
             self._own_session = False
-            if self._session.loop is not self._loop:  # noqa
-                raise RuntimeError('BLiveClient and session must use the same event loop')
 
         self._heartbeat_interval = heartbeat_interval
         self._ssl = ssl if ssl else ssl_._create_unverified_context()  # noqa
@@ -206,7 +195,7 @@ class BLiveClient:
             logger.warning('room=%s client is running, cannot start() again', self.room_id)
             return
 
-        self._network_future = asyncio.ensure_future(self._network_coroutine_wrapper(), loop=self._loop)
+        self._network_future = asyncio.ensure_future(self._network_coroutine_wrapper())
 
     def stop(self):
         """
@@ -427,14 +416,14 @@ class BLiveClient:
             # 准备重连
             retry_count += 1
             logger.warning('room=%d is reconnecting, retry_count=%d', self.room_id, retry_count)
-            await asyncio.sleep(1, loop=self._loop)
+            await asyncio.sleep(1)
 
     async def _on_ws_connect(self):
         """
         websocket连接成功
         """
         await self._send_auth()
-        self._heartbeat_timer_handle = self._loop.call_later(self._heartbeat_interval, self._on_send_heartbeat)
+        self._heartbeat_timer_handle = asyncio.get_event_loop().call_later(self._heartbeat_interval, self._on_send_heartbeat)
 
     async def _on_ws_close(self):
         """
@@ -467,8 +456,8 @@ class BLiveClient:
             self._heartbeat_timer_handle = None
             return
 
-        self._heartbeat_timer_handle = self._loop.call_later(self._heartbeat_interval, self._on_send_heartbeat)
-        asyncio.ensure_future(self._send_heartbeat(), loop=self._loop)
+        self._heartbeat_timer_handle = asyncio.get_event_loop().call_later(self._heartbeat_interval, self._on_send_heartbeat)
+        asyncio.ensure_future(self._send_heartbeat())
 
     async def _send_heartbeat(self):
         """
@@ -560,7 +549,7 @@ class BLiveClient:
             # 业务消息
             if header.ver == ProtoVer.BROTLI:
                 # 压缩过的先解压，为了避免阻塞网络线程，放在其他线程执行
-                body = await self._loop.run_in_executor(None, brotli.decompress, body)
+                body = await asyncio.get_event_loop().run_in_executor(None, brotli.decompress, body)
                 await self._parse_ws_message(body)
             elif header.ver == ProtoVer.NORMAL:
                 # 没压缩过的直接反序列化，因为有万恶的GIL，这里不能并行避免阻塞
@@ -600,10 +589,8 @@ class BLiveClient:
         results = await asyncio.shield(
             asyncio.gather(
                 *(handler.handle(self, command, self._opts) for handler in self._handlers),
-                loop=self._loop,
                 return_exceptions=True
-            ),
-            loop=self._loop
+            )
         )
         for res in results:
             if isinstance(res, Exception):
