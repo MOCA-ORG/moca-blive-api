@@ -85,6 +85,7 @@ class BLiveClient:
     :param heartbeat_interval: 发送心跳包的间隔时间（秒）
     :param ssl: True表示用默认的SSLContext验证，False表示不验证，也可以传入SSLContext
     :param loop: 协程事件循环
+    :param opts: 用于传递任意变量到处理器
     """
 
     def __init__(
@@ -95,7 +96,11 @@ class BLiveClient:
             heartbeat_interval=30,
             ssl: Union[bool, ssl_.SSLContext] = True,
             loop: Optional[asyncio.BaseEventLoop] = None,
+            opts: Optional[Dict[str, Any]] = None
     ):
+        # 这个变量会被直接传递给处理器
+        self._opts = opts
+
         # 用来init_room的临时房间ID，可以用短ID
         self._tmp_room_id = room_id
         self._uid = uid
@@ -387,7 +392,8 @@ class BLiveClient:
                 async with self._session.ws_connect(
                         f"wss://{host_server['host']}:{host_server['wss_port']}/sub",
                         headers={
-                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
+                                          ' AppleWebKit/537.36 (KHTML, like Gecko)'
                                           ' Chrome/102.0.0.0 Safari/537.36'
                         },
                         receive_timeout=self._heartbeat_interval + 5,
@@ -593,7 +599,7 @@ class BLiveClient:
         # 外部代码可能不能正常处理取消，所以这里加shield
         results = await asyncio.shield(
             asyncio.gather(
-                *(handler.handle(self, command) for handler in self._handlers),
+                *(handler.handle(self, command, self._opts) for handler in self._handlers),
                 loop=self._loop,
                 return_exceptions=True
             ),

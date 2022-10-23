@@ -47,7 +47,7 @@ class HandlerInterface:
     直播消息处理器接口
     """
 
-    async def handle(self, client: client_.BLiveClient, command: dict):
+    async def handle(self, client: client_.BLiveClient, command: dict, opts: Optional[Dict[str, Any]]):
         raise NotImplementedError
 
 
@@ -56,29 +56,29 @@ class BaseHandler(HandlerInterface):
     一个简单的消息处理器实现，带消息分发和消息类型转换。继承并重写_on_xxx方法即可实现自己的处理器
     """
 
-    def __heartbeat_callback(self, client: client_.BLiveClient, command: dict):
-        return self._on_heartbeat(client, models.HeartbeatMessage.from_command(command['data']))
+    def __heartbeat_callback(self, client: client_.BLiveClient, command: dict, opts: Optional[Dict[str, Any]]):
+        return self._on_heartbeat(client, models.HeartbeatMessage.from_command(command['data']), opts)
 
-    def __danmu_msg_callback(self, client: client_.BLiveClient, command: dict):
-        return self._on_danmaku(client, models.DanmakuMessage.from_command(command['info']))
+    def __danmu_msg_callback(self, client: client_.BLiveClient, command: dict, opts: Optional[Dict[str, Any]]):
+        return self._on_danmaku(client, models.DanmakuMessage.from_command(command['info']), opts)
 
-    def __send_gift_callback(self, client: client_.BLiveClient, command: dict):
-        return self._on_gift(client, models.GiftMessage.from_command(command['data']))
+    def __send_gift_callback(self, client: client_.BLiveClient, command: dict, opts: Optional[Dict[str, Any]]):
+        return self._on_gift(client, models.GiftMessage.from_command(command['data']), opts)
 
-    def __guard_buy_callback(self, client: client_.BLiveClient, command: dict):
-        return self._on_buy_guard(client, models.GuardBuyMessage.from_command(command['data']))
+    def __guard_buy_callback(self, client: client_.BLiveClient, command: dict, opts: Optional[Dict[str, Any]]):
+        return self._on_buy_guard(client, models.GuardBuyMessage.from_command(command['data']), opts)
 
-    def __super_chat_message_callback(self, client: client_.BLiveClient, command: dict):
-        return self._on_super_chat(client, models.SuperChatMessage.from_command(command['data']))
+    def __super_chat_message_callback(self, client: client_.BLiveClient, command: dict, opts: Optional[Dict[str, Any]]):
+        return self._on_super_chat(client, models.SuperChatMessage.from_command(command['data']), opts)
 
-    def __super_chat_message_delete_callback(self, client: client_.BLiveClient, command: dict):
-        return self._on_super_chat_delete(client, models.SuperChatDeleteMessage.from_command(command['data']))
+    def __super_chat_message_delete_callback(self, client: client_.BLiveClient, command: dict, opts: Optional[Dict[str, Any]]):
+        return self._on_super_chat_delete(client, models.SuperChatDeleteMessage.from_command(command['data']), opts)
 
     # cmd -> 处理回调
     _CMD_CALLBACK_DICT: Dict[
         str,
         Optional[Callable[
-            ['BaseHandler', client_.BLiveClient, dict],
+            ['BaseHandler', client_.BLiveClient, dict, Optional[Dict[str, Any]]],
             Awaitable
         ]]
     ] = {
@@ -101,7 +101,7 @@ class BaseHandler(HandlerInterface):
         _CMD_CALLBACK_DICT[cmd] = None
     del cmd
 
-    async def handle(self, client: client_.BLiveClient, command: dict):
+    async def handle(self, client: client_.BLiveClient, command: dict, opts: Optional[Dict[str, Any]]):
         cmd = command.get('cmd', '')
         pos = cmd.find(':')  # 2019-5-29 B站弹幕升级新增了参数
         if pos != -1:
@@ -116,34 +116,34 @@ class BaseHandler(HandlerInterface):
 
         callback = self._CMD_CALLBACK_DICT[cmd]
         if callback is not None:
-            await callback(self, client, command)
+            await callback(self, client, command, opts)
 
-    async def _on_heartbeat(self, client: client_.BLiveClient, message: models.HeartbeatMessage):
+    async def _on_heartbeat(self, client: client_.BLiveClient, message: models.HeartbeatMessage, opts: Optional[Dict[str, Any]]):
         """
         收到心跳包（人气值）
         """
 
-    async def _on_danmaku(self, client: client_.BLiveClient, message: models.DanmakuMessage):
+    async def _on_danmaku(self, client: client_.BLiveClient, message: models.DanmakuMessage, opts: Optional[Dict[str, Any]]):
         """
         收到弹幕
         """
 
-    async def _on_gift(self, client: client_.BLiveClient, message: models.GiftMessage):
+    async def _on_gift(self, client: client_.BLiveClient, message: models.GiftMessage, opts: Optional[Dict[str, Any]]):
         """
         收到礼物
         """
 
-    async def _on_buy_guard(self, client: client_.BLiveClient, message: models.GuardBuyMessage):
+    async def _on_buy_guard(self, client: client_.BLiveClient, message: models.GuardBuyMessage, opts: Optional[Dict[str, Any]]):
         """
         有人上舰
         """
 
-    async def _on_super_chat(self, client: client_.BLiveClient, message: models.SuperChatMessage):
+    async def _on_super_chat(self, client: client_.BLiveClient, message: models.SuperChatMessage, opts: Optional[Dict[str, Any]]):
         """
         醒目留言
         """
 
-    async def _on_super_chat_delete(self, client: client_.BLiveClient, message: models.SuperChatDeleteMessage):
+    async def _on_super_chat_delete(self, client: client_.BLiveClient, message: models.SuperChatDeleteMessage, opts: Optional[Dict[str, Any]]):
         """
         删除醒目留言
         """
