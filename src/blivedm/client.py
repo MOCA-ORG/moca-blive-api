@@ -1,7 +1,7 @@
 import asyncio
 import collections
 import enum
-import json
+from ujson import loads, dumps
 import logging
 import ssl as ssl_
 import struct
@@ -345,7 +345,7 @@ class BLiveClient:
         :param operation: 操作码，见Operation
         :return: 整个包的数据
         """
-        body = json.dumps(data).encode('utf-8')
+        body = dumps(data).encode('utf-8')
         header = HEADER_STRUCT.pack(*HeaderTuple(
             pack_len=HEADER_STRUCT.size + len(body),
             raw_header_size=HEADER_STRUCT.size,
@@ -560,7 +560,7 @@ class BLiveClient:
                 # 没压缩过的直接反序列化，因为有万恶的GIL，这里不能并行避免阻塞
                 if len(body) != 0:
                     try:
-                        body = json.loads(body.decode('utf-8'))
+                        body = loads(body.decode('utf-8'))
                         await self._handle_command(body)
                     except asyncio.CancelledError:
                         raise
@@ -574,7 +574,7 @@ class BLiveClient:
 
         elif header.operation == Operation.AUTH_REPLY:
             # 认证响应
-            body = json.loads(body.decode('utf-8'))
+            body = loads(body.decode('utf-8'))
             if body['code'] != AuthReplyCode.OK:
                 raise AuthError(f"auth reply error, code={body['code']}, body={body}")
             await self._websocket.send_bytes(self._make_packet({}, Operation.HEARTBEAT))

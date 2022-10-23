@@ -1,4 +1,4 @@
-import json
+from ujson import loads, JSONDecodeError
 from typing import *
 
 __all__ = (
@@ -227,8 +227,8 @@ class DanmakuMessage:
         if isinstance(self.emoticon_options, dict):
             return self.emoticon_options
         try:
-            return json.loads(self.emoticon_options)
-        except (json.JSONDecodeError, TypeError):
+            return loads(self.emoticon_options)
+        except (JSONDecodeError, TypeError):
             return {}
 
     @property
@@ -244,8 +244,8 @@ class DanmakuMessage:
         if isinstance(self.voice_config, dict):
             return self.voice_config
         try:
-            return json.loads(self.voice_config)
-        except (json.JSONDecodeError, TypeError):
+            return loads(self.voice_config)
+        except (JSONDecodeError, TypeError):
             return {}
 
 
