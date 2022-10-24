@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  moca_blive_api_mmock:
+    container_name: moca-blive-api-mmock
+    image: jordimartin/mmock:v3.0.3
+    volumes:
+      - ./docker/mmock:/config:z
+    ports:
+      - '8082:8082' # console port
+      - '8083:8083' # server port

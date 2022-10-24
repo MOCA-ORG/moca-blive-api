@@ -1,0 +1,8 @@
+# To verify the request, accept all accesses and return status code 200.
+
+request:
+  method: POST
+  path: "/*"
+response:
+  statusCode: 200
+  body: 'Success'
